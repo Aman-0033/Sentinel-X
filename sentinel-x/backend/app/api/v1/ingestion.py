@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy.orm import Session
 
 from app.api.deps import RoleChecker, check_rate_limit, get_current_user, get_db, get_request_meta
+from app.core.exceptions import AppValidationError
 from app.db.models.user import User
 from app.schemas.common import ResponseMeta, SuccessResponse
 from app.schemas.ingestion import (
@@ -77,9 +78,14 @@ async def upload_telemetry_file(
     """Quarantine uploaded file, sanitize against CSV injection, validate schema, and ingest records."""
     service = IngestionService(db)
 
-    # 1. Read file bytes
-    content = await file.read()
+    # 1. Read file bytes and validate filename against path traversal
     filename = file.filename or "telemetry_upload.csv"
+    if any(seq in filename for seq in ("..", "/", "\\", "\x00")):
+        raise AppValidationError(
+            "Filename contains invalid or dangerous path traversal sequences."
+        )
+
+    content = await file.read()
     ext = "." + filename.rsplit(".", 1)[-1].lower() if "." in filename else ".csv"
 
     # 2. Quarantine and process file safely

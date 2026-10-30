@@ -35,6 +35,16 @@ DEFAULT_QUARANTINE_DIR = Path("tmp/quarantine")
 CSV_FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
 
 
+EXECUTABLE_MAGIC_BYTES = (
+    b"MZ",  # Windows PE executable
+    b"\x7fELF",  # Linux ELF binary
+    b"\xca\xfe\xba\xbe",  # Mach-O / Java class
+    b"#!/bin/",  # Shell script
+    b"#!/usr/bin/",  # Unix script
+)
+MAX_CSV_COLUMNS = 100
+
+
 def sanitize_csv_cell(value: Any) -> Any:
     """Neutralize CSV formula injection attacks (DDE/formula execution)."""
     if isinstance(value, str):
@@ -188,6 +198,10 @@ class IngestionService:
                 f"Uploaded file exceeds maximum limit of {MAX_UPLOAD_SIZE_BYTES // (1024 * 1024)} MB."
             )
 
+        # 1b. Executable Content Check (Magic Bytes)
+        if any(file_bytes.startswith(sig) for sig in EXECUTABLE_MAGIC_BYTES):
+            raise AppValidationError("Executable file content detected and rejected.")
+
         # 2. Type Check
         clean_ext = file_extension.lower().strip().lstrip(".")
         if clean_ext not in ("csv", "json"):
@@ -230,6 +244,11 @@ class IngestionService:
             reader = csv.DictReader(f)
             if not reader.fieldnames:
                 raise AppValidationError("CSV file missing header row.")
+
+            if len(reader.fieldnames) > MAX_CSV_COLUMNS:
+                raise AppValidationError(
+                    f"CSV column count ({len(reader.fieldnames)}) exceeds maximum limit of {MAX_CSV_COLUMNS}."
+                )
 
             # Sanitize headers and rows against CSV injection
             for row in reader:

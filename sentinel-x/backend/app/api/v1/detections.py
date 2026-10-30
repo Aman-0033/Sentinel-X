@@ -230,6 +230,15 @@ def submit_feedback(
         comment=req.comment,
     )
 
+    from app.services.audit_service import AuditService
+    AuditService(db).log_event(
+        action="ANALYST_FEEDBACK_SUBMITTED",
+        user_id=current_user.id,
+        resource_type="DETECTION",
+        resource_id=detection_id,
+        metadata={"verdict": req.verdict, "comment": req.comment},
+    )
+
     data = AnalystFeedbackResponse(
         id=feedback.id,
         detection_id=feedback.detection_id,

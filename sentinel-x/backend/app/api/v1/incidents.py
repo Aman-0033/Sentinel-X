@@ -229,6 +229,15 @@ def update_incident(
             comment=req.description,
         )
 
+        from app.services.audit_service import AuditService
+        AuditService(db).log_event(
+            action="INCIDENT_STATUS_UPDATED",
+            user_id=current_user.id,
+            resource_type="INCIDENT",
+            resource_id=incident_id,
+            metadata={"status": req.status, "notes": req.description},
+        )
+
     if req.assigned_to is not None:
         service.assign_incident(
             incident_id=incident_id,

@@ -55,6 +55,15 @@ def create_report(
     except Exception:
         pass
 
+    from app.services.audit_service import AuditService
+    AuditService(db).log_event(
+        action="SECURITY_REPORT_REQUESTED",
+        user_id=current_user.id,
+        resource_type="REPORT",
+        resource_id=report.id,
+        metadata={"report_type": req.report_type, "format": req.format},
+    )
+
     data = ReportItem(
         id=report.id,
         generated_by=report.generated_by,

@@ -17,6 +17,8 @@ from app.core.exceptions import register_exception_handlers
 from app.core.logging import setup_logging
 from app.core.redis import close_redis_connection
 from app.core.security_headers import SecurityHeadersMiddleware
+from app.middleware.audit import AuditMiddleware
+from app.middleware.authentication import AuthenticationMiddleware
 from app.middleware.request_id import RequestIdMiddleware
 
 logger = logging.getLogger("sentinel.app")
@@ -71,6 +73,8 @@ def create_app() -> FastAPI:
         max_age=600,
     )
     app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(AuditMiddleware)
+    app.add_middleware(AuthenticationMiddleware)
     app.add_middleware(RequestIdMiddleware)
 
     # 3. Mount health probe routes (root /health) and API v1 endpoints
