@@ -55,7 +55,7 @@ def test_create_admin_creates_user_with_hashed_password(db_session: Session):
     assert user.is_active is True
     # Password must be hashed with bcrypt, never plaintext
     assert user.password_hash != plain_password
-    assert user.password_hash.startswith("$2b$") or user.password_hash.startswith("$2a$")
+    assert user.password_hash.startswith(("$argon2id$", "$argon2", "$2b$", "$2a$"))
     assert verify_password(plain_password, user.password_hash) is True
 
     # Re-run with same email returns existing user without errors (idempotent)

@@ -19,6 +19,7 @@ def test_alembic_migrations_clean_build_and_rollback(tmp_path: Path):
     alembic_cfg = Config(str(alembic_ini))
     alembic_cfg.set_main_option("sqlalchemy.url", test_db_url)
     alembic_cfg.set_main_option("script_location", str(backend_dir / "migrations"))
+    alembic_cfg.set_main_option("version_locations", str(backend_dir / "migrations" / "versions"))
 
     # 1. Run upgrade to head from clean empty database
     command.upgrade(alembic_cfg, "head")
