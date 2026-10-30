@@ -83,12 +83,14 @@ Thumbs.db
 
 # Project generated artifacts
 ml/artifacts/models/*.joblib
+!ml/artifacts/models/sentinel_xgb_v1.joblib
 ml/artifacts/models/*.pkl
 ml/artifacts/models/*.onnx
 !ml/artifacts/models/.gitkeep
 ml/artifacts/preprocessors/*.joblib
 !ml/artifacts/preprocessors/.gitkeep
 ml/artifacts/metrics/*.json
+!ml/artifacts/metrics/evaluation_1.0.0.json
 !ml/artifacts/metrics/.gitkeep
 ml/datasets/raw/*
 !ml/datasets/raw/.gitkeep

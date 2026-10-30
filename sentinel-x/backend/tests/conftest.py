@@ -48,3 +48,16 @@ def client(app) -> Generator[TestClient, None, None]:
     """TestClient fixture with base URL."""
     with TestClient(app) as test_client:
         yield test_client
+
+
+@pytest.fixture
+def db_session(app) -> Generator:
+    """Yield a database session for unit and service tests."""
+    from app.db.session import SessionLocal
+
+    session = SessionLocal()
+    try:
+        yield session
+    finally:
+        session.rollback()
+        session.close()

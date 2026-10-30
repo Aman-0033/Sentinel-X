@@ -94,3 +94,7 @@ class NetworkFlowRepository:
     def list_data_sources(self) -> List[DataSource]:
         """List all telemetry data sources."""
         return self.db.query(DataSource).order_by(DataSource.created_at.desc()).all()
+
+
+# Convenient alias
+FlowRepository = NetworkFlowRepository

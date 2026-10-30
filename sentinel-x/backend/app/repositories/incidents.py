@@ -31,14 +31,35 @@ class IncidentRepository:
         self.db.refresh(incident)
         return incident
 
-    def update(self, incident: Incident, **kwargs) -> Incident:
-        """Update incident properties."""
+    def update(self, incident: Incident | str, **kwargs) -> Optional[Incident]:
+        """Update incident properties by instance or primary key ID."""
+        if isinstance(incident, str):
+            inc_obj = self.get_by_id(incident)
+            if not inc_obj:
+                return None
+        else:
+            inc_obj = incident
+
         for key, value in kwargs.items():
-            if hasattr(incident, key) and value is not None:
-                setattr(incident, key, value)
-        incident.updated_at = datetime.now(timezone.utc)
+            if hasattr(inc_obj, key) and value is not None:
+                setattr(inc_obj, key, value)
+        inc_obj.updated_at = datetime.now(timezone.utc)
         self.db.commit()
-        self.db.refresh(incident)
+        self.db.refresh(inc_obj)
+        return inc_obj
+
+    def update_status(
+        self, incident_id: str, status: str, resolved_at: Optional[datetime] = None
+    ) -> Optional[Incident]:
+        """Update incident status and resolution timestamp."""
+        incident = self.get_by_id(incident_id)
+        if incident:
+            incident.status = status.upper()
+            if resolved_at is not None:
+                incident.resolved_at = resolved_at
+            incident.updated_at = datetime.now(timezone.utc)
+            self.db.commit()
+            self.db.refresh(incident)
         return incident
 
     def list_incidents(
@@ -75,7 +96,12 @@ class IncidentRepository:
             query = query.filter(Incident.assigned_to == assigned_to)
         return query.count()
 
-    def link_detection(self, incident_id: str, detection_id: str) -> IncidentDetection:
+    def link_detection(
+        self,
+        incident_id: str,
+        detection_id: str,
+        linked_at: Optional[datetime] = None,
+    ) -> IncidentDetection:
         """Associate a detection with an incident."""
         existing = (
             self.db.query(IncidentDetection)
@@ -87,7 +113,11 @@ class IncidentRepository:
         )
         if existing:
             return existing
-        link = IncidentDetection(incident_id=incident_id, detection_id=detection_id)
+        link = IncidentDetection(
+            incident_id=incident_id,
+            detection_id=detection_id,
+            linked_at=linked_at or datetime.now(timezone.utc),
+        )
         self.db.add(link)
         self.db.commit()
         return link

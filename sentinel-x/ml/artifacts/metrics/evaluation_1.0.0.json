@@ -1,0 +1,61 @@
+{
+  "model_name": "SENTINEL-XGBoost",
+  "version": "1.0.0",
+  "algorithm": "XGBoost + IsolationForest",
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1_score": 1.0,
+  "checksum": "dc3919fab54b38e5f1b8a3294194b88502f562cb30bb621775b8df5f2fbc254a",
+  "artifact_file": "sentinel_xgb_v1.joblib",
+  "classification_report": {
+    "Benign": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 274.0
+    },
+    "Port Scan": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 64.0
+    },
+    "Brute Force": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 47.0
+    },
+    "DDoS": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 60.0
+    },
+    "Malware C2": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 29.0
+    },
+    "Data Exfiltration": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 26.0
+    },
+    "accuracy": 1.0,
+    "macro avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 500.0
+    },
+    "weighted avg": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 500.0
+    }
+  }
+}

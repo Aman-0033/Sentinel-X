@@ -10,16 +10,6 @@ from app.core.exceptions import AppValidationError
 from app.services.ingestion_service import IngestionService, sanitize_csv_cell
 
 
-@pytest.fixture
-def db_session(app) -> Session:
-    from app.db.session import SessionLocal
-
-    session = SessionLocal()
-    yield session
-    session.rollback()
-    session.close()
-
-
 def test_sanitize_csv_cell():
     """Verify formula injection prefixes are neutralized."""
     assert sanitize_csv_cell("=1+1") == "'=1+1"
