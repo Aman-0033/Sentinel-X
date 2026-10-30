@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --soc-black: #0A0A0A;
+    --soc-surface: #121216;
+    --soc-border: #1E293B;
+    --soc-cerulean: #007BA7;
+    --soc-rose: #FF2D95;
+    --soc-text: #F8FAFC;
+    --soc-muted: #94A3B8;
+  }
+
+  body {
+    background-color: #0A0A0A;
+    color: #F8FAFC;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+  }
+
+  /* Custom dark scrollbar for SOC aesthetic */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0A0A0A;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1E293B;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #007BA7;
+  }
+}
+
+/* React Flow custom styling for SOC dark mode */
+.react-flow__background {
+  background-color: #0A0A0A !important;
+}
+
+.react-flow__controls {
+  background: #121216 !important;
+  border: 1px solid #1E293B !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.react-flow__controls-button {
+  background: #121216 !important;
+  border-bottom: 1px solid #1E293B !important;
+  fill: #94A3B8 !important;
+}
+
+.react-flow__controls-button:hover {
+  background: #1E293B !important;
+  fill: #007BA7 !important;
+}
+
+.react-flow__attribution {
+  display: none !important;
+}
+
+/* Radar pulse animation for live telemetry */
+@keyframes pulse-cerulean {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes pulse-rose {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(255, 45, 149, 0.7);
+  }
+  70% {
+    opacity: 0.8;
+    box-shadow: 0 0 0 10px rgba(255, 45, 149, 0);
+  }
+}
+
+.animate-pulse-cerulean {
+  animation: pulse-cerulean 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-pulse-rose {
+  animation: pulse-rose 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Subtle cyber-grid background utility */
+.cyber-grid {
+  background-size: 30px 30px;
+  background-image: 
+    linear-gradient(to right, rgba(30, 41, 59, 0.25) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 41, 59, 0.25) 1px, transparent 1px);
+}

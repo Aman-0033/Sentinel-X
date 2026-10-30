@@ -102,4 +102,6 @@ temp/
 reports/generated/
 sentinel-x/backend/storage/
 *.pdf
+/frontend
+
 
