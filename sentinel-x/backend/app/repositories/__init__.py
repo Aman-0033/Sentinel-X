@@ -1,7 +1,7 @@
 """Data access repositories for Sentinel-X."""
 
 from app.repositories.audit_logs import AuditLogRepository
-from app.repositories.detections import DetectionRepository
+from app.repositories.detections import AnalystFeedbackRepository, DetectionRepository
 from app.repositories.flows import FlowRepository, NetworkFlowRepository
 from app.repositories.incidents import IncidentRepository
 from app.repositories.models import ModelVersionRepository
@@ -14,6 +14,7 @@ __all__ = [
     "FlowRepository",
     "NetworkFlowRepository",
     "DetectionRepository",
+    "AnalystFeedbackRepository",
     "IncidentRepository",
     "ModelVersionRepository",
     "ThreatIntelRepository",

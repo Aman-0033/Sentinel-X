@@ -50,6 +50,16 @@ def client(app) -> Generator[TestClient, None, None]:
         yield test_client
 
 
+@pytest.fixture(autouse=True)
+def reset_in_memory_rate_limits():
+    """Reset rate limiting state between test cases to prevent test crosstalk."""
+    from app.core.rate_limit import _in_memory_store
+
+    _in_memory_store.clear()
+    yield
+    _in_memory_store.clear()
+
+
 @pytest.fixture
 def db_session(app) -> Generator:
     """Yield a database session for unit and service tests."""

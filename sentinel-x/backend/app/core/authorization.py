@@ -72,6 +72,9 @@ def has_function_permission(role_name: str, action: str) -> bool:
     return action in permissions
 
 
+has_permission = has_function_permission
+
+
 def authorize_object_access(user: User, action: str, resource: Any) -> bool:
     """Evaluate object-level authorization for sensitive entities."""
     role_name = get_user_role_name(user)

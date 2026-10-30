@@ -26,19 +26,27 @@ class UserRepository:
         return self.db.query(User).filter(User.email == email.lower().strip()).first()
 
     def list_users(
-        self, skip: int = 0, limit: int = 50, is_active: Optional[bool] = None
+        self,
+        skip: int = 0,
+        limit: int = 50,
+        is_active: Optional[bool] = None,
+        role_name: Optional[str] = None,
     ) -> List[User]:
-        """List users with optional pagination and active-status filtering."""
+        """List users with optional pagination, active-status, and role filtering."""
         query = self.db.query(User)
         if is_active is not None:
             query = query.filter(User.is_active == is_active)
+        if role_name:
+            query = query.join(Role).filter(Role.name == role_name.upper())
         return query.order_by(User.created_at.desc()).offset(skip).limit(limit).all()
 
-    def count_users(self, is_active: Optional[bool] = None) -> int:
+    def count_users(self, is_active: Optional[bool] = None, role_name: Optional[str] = None) -> int:
         """Count total matching users."""
         query = self.db.query(User)
         if is_active is not None:
             query = query.filter(User.is_active == is_active)
+        if role_name:
+            query = query.join(Role).filter(Role.name == role_name.upper())
         return query.count()
 
     def create(

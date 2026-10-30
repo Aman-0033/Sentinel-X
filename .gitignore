@@ -100,5 +100,6 @@ uploads/
 tmp/
 temp/
 reports/generated/
+sentinel-x/backend/storage/
 *.pdf
 

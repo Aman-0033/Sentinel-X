@@ -59,8 +59,8 @@ class IngestionService:
         # 1. Timestamp
         raw_ts = raw_flow.get("timestamp")
         if not raw_ts:
-            raise AppValidationError("Flow record missing required field 'timestamp'.")
-        if isinstance(raw_ts, datetime):
+            timestamp = datetime.now(timezone.utc)
+        elif isinstance(raw_ts, datetime):
             timestamp = raw_ts if raw_ts.tzinfo else raw_ts.replace(tzinfo=timezone.utc)
         else:
             try:

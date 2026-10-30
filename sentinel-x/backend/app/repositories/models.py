@@ -67,3 +67,10 @@ class ModelVersionRepository:
         if status:
             query = query.filter(ModelVersion.status == status.upper())
         return query.order_by(ModelVersion.created_at.desc()).offset(skip).limit(limit).all()
+
+    def count_models(self, status: Optional[str] = None) -> int:
+        """Count total registered models matching status."""
+        query = self.db.query(ModelVersion)
+        if status:
+            query = query.filter(ModelVersion.status == status.upper())
+        return query.count()

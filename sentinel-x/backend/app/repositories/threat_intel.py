@@ -43,6 +43,12 @@ class ThreatIntelRepository:
             query = query.filter(ThreatIntelEnrichment.provider == provider.upper())
         return query.order_by(ThreatIntelEnrichment.checked_at.desc()).first()
 
+    def get_active_by_indicator(
+        self, indicator_value: str, provider: Optional[str] = None
+    ) -> Optional[ThreatIntelEnrichment]:
+        """Fetch valid active cached enrichment by indicator value."""
+        return self.get_by_indicator(indicator_value, provider)
+
     def list_by_detection(self, detection_id: str) -> List[ThreatIntelEnrichment]:
         """Fetch all threat intelligence records associated with a detection."""
         return (

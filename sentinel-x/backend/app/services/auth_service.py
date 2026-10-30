@@ -149,6 +149,12 @@ class AuthService:
 
         return new_access_token, new_refresh_token
 
+    def rotate_refresh_token(
+        self, refresh_token_str: str, client_ip: Optional[str] = None
+    ) -> Tuple[str, str]:
+        """Alias for refresh_tokens."""
+        return self.refresh_tokens(refresh_token_str)
+
     def logout(
         self,
         refresh_token_str: Optional[str] = None,
@@ -173,6 +179,10 @@ class AuthService:
                     self._blacklist_access_token(jti, exp)
             except Exception:
                 pass
+
+    def logout_session(self, refresh_token_str: Optional[str] = None) -> None:
+        """Alias for logout with refresh token."""
+        self.logout(refresh_token_str=refresh_token_str)
 
     def validate_access_token(self, token_str: str) -> Dict[str, Any]:
         """Validate signature, expiry, and revocation state of an access token."""

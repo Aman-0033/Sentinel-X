@@ -10,6 +10,7 @@ from typing import AsyncGenerator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1 import api_router
 from app.api.v1.health import router as health_router
 from app.core.config import get_settings
 from app.core.exceptions import register_exception_handlers
@@ -72,9 +73,9 @@ def create_app() -> FastAPI:
     app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(RequestIdMiddleware)
 
-    # 3. Mount health probe routes (Both root /health and /api/v1/health)
+    # 3. Mount health probe routes (root /health) and API v1 endpoints
     app.include_router(health_router, prefix="/health", tags=["Health"])
-    app.include_router(health_router, prefix=f"{settings.API_V1_PREFIX}/health", tags=["Health"])
+    app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
     return app
 
