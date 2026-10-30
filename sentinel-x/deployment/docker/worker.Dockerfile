@@ -24,3 +24,4 @@ RUN useradd -m -u 10001 sentinel && \
 USER sentinel
 
 CMD ["celery", "-A", "app.workers.celery_app", "worker", "--loglevel=info"]
+

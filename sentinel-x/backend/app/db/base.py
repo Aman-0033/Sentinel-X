@@ -4,7 +4,13 @@ import uuid
 from datetime import datetime, timezone
 
 from sqlalchemy import DateTime, String
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.types import JSON
+
+# Cross-dialect database types: INET and JSONB on PostgreSQL, compatible types on SQLite
+INET_TYPE = String(45).with_variant(postgresql.INET, "postgresql")
+JSONB_TYPE = JSON().with_variant(postgresql.JSONB, "postgresql")
 
 
 class Base(DeclarativeBase):

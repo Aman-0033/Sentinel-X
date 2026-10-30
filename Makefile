@@ -21,3 +21,4 @@ docker-up:
 
 docker-down:
 	docker compose down -v
+

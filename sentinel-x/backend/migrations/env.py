@@ -10,6 +10,7 @@ from sqlalchemy import engine_from_config, pool
 # Ensure backend root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
+import app.db.models  # noqa: F401
 from app.core.config import get_settings
 from app.db.base import Base
 
@@ -24,9 +25,10 @@ if config.config_file_name is not None:
 # Model metadata for autogenerate support
 target_metadata = Base.metadata
 
-# Inject application database URL dynamically from Pydantic settings
-settings = get_settings()
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+# Use configured URL or fallback to application settings
+if not config.get_main_option("sqlalchemy.url"):
+    settings = get_settings()
+    config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 
 def run_migrations_offline() -> None:
@@ -45,8 +47,10 @@ def run_migrations_offline() -> None:
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
+    target_url = config.get_main_option("sqlalchemy.url") or get_settings().DATABASE_URL
     configuration = config.get_section(config.config_ini_section, {})
-    configuration["sqlalchemy.url"] = settings.DATABASE_URL
+    configuration["sqlalchemy.url"] = target_url
+
     connectable = engine_from_config(
         configuration,
         prefix="sqlalchemy.",

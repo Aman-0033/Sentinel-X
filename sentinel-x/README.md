@@ -36,3 +36,4 @@ docker compose up -d
 curl http://localhost:8000/health/live
 curl http://localhost:8000/health/ready
 ```
+
