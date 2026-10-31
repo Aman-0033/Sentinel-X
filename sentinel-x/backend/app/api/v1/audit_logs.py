@@ -47,3 +47,4 @@ def list_audit_logs(
         for log in logs
     ]
     return SuccessResponse(data=data, meta=meta)
+

@@ -112,3 +112,4 @@
 15. **Admin Login**: Switch to Administrator account (`admin@sentinel.internal`).
 16. **Audit Trail Inspection**: Open `/audit-logs` to show the complete, immutable record of every action performed during the demo.
 17. **Secure Logout**: Log out and show that access tokens are blacklisted in Redis and refresh cookies revoked.
+

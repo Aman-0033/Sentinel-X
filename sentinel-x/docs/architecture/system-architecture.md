@@ -111,3 +111,4 @@ flowchart TD
 ### 3.5 Storage & Persistence Tier
 * **PostgreSQL 16:** Relational integrity with foreign key check constraints, B-Tree indexes on search fields (`detected_at`, `status`, `severity`), and JSONB columns for flexible SHAP feature attribution weights.
 * **Redis 7:** Token revocation store, sliding-window rate limit counters, and Celery task broker.
+

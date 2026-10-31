@@ -92,3 +92,4 @@ docker compose exec backend python scripts/create_admin.py \
 curl -f http://localhost/health/ready
 # Expected: {"status":"healthy","database":true,"redis":true}
 ```
+

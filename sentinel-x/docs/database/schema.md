@@ -245,3 +245,4 @@ Executive security digests and compliance artifacts.
 | `period_end` | `TIMESTAMPTZ` | NOT NULL | Scope end date |
 | `created_by` | `VARCHAR(36)` | FK(`users.id`), NOT NULL | Generating operator |
 | `created_at` | `TIMESTAMPTZ` | NOT NULL | Creation timestamp |
+

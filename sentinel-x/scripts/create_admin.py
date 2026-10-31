@@ -8,12 +8,16 @@ import argparse
 import logging
 import os
 import sys
+from pathlib import Path
 
 # Ensure backend root is in sys.path
-sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "backend"))
-)
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+backend_dir = Path(__file__).resolve().parents[1] / "backend"
+if not backend_dir.exists():
+    backend_dir = Path(__file__).resolve().parents[0] / "sentinel-x" / "backend"
+if str(backend_dir) not in sys.path:
+    sys.path.insert(0, str(backend_dir))
+if str(backend_dir.parent) not in sys.path:
+    sys.path.insert(0, str(backend_dir.parent))
 
 from app.core.config import get_settings
 from app.core.security import get_password_hash
@@ -57,8 +61,13 @@ def create_or_update_admin(
     # Check if user with email exists
     existing_user = db.query(User).filter(User.email == email.lower().strip()).first()
     if existing_user:
+        existing_user.password_hash = get_password_hash(password)
+        existing_user.role_id = admin_role.id
+        existing_user.is_active = True
+        db.commit()
+        db.refresh(existing_user)
         logger.info(
-            f"User with email '{email}' already exists (ID: {existing_user.id}). No changes made."
+            f"User with email '{email}' already exists (ID: {existing_user.id}). Password updated successfully."
         )
         return existing_user
 
@@ -91,7 +100,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--password",
-        default=os.getenv("ADMIN_PASSWORD", "SentinelAdminSecure2026!"),
+        default=os.getenv("ADMIN_PASSWORD", "SentinelAdmin2026!"),
         help="Admin password",
     )
     parser.add_argument(

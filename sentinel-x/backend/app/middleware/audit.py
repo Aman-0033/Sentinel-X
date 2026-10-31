@@ -43,3 +43,4 @@ class AuditMiddleware(BaseHTTPMiddleware):
             )
 
         return response
+

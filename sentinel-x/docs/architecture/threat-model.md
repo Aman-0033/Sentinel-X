@@ -83,3 +83,4 @@ flowchart LR
 | :--- | :--- | :--- |
 | **Viewer Activating Models** | Viewer role executes `POST /api/v1/models/{id}/activate`. | Server-side `RoleChecker(["ADMIN"])` rejects with HTTP 403 `AUTHORIZATION_DENIED`. |
 | **Analyst Creating Admin Users** | Analyst executes `POST /api/v1/users`. | Server-side authorization blocks user management routes for non-ADMIN callers. |
+

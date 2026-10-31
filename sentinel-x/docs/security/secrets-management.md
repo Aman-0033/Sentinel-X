@@ -68,3 +68,4 @@ def redact_data(data: Any) -> Any:
    - The test suite `backend/tests/security/test_secret_leak_security.py` executes regular expression audits across source files and git commits to guarantee no high-entropy private keys or credentials are leaked.
 3. **Container Isolation**:
    - Production Docker images do not bundle `.env` files; secrets are injected dynamically at container initialization time using environment variables or volume mounts.
+

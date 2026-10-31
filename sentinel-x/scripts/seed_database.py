@@ -7,11 +7,16 @@ import logging
 import os
 import sys
 
+from pathlib import Path
+
 # Ensure backend root is in sys.path
-sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "backend"))
-)
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+backend_dir = Path(__file__).resolve().parents[1] / "backend"
+if not backend_dir.exists():
+    backend_dir = Path(__file__).resolve().parents[0] / "sentinel-x" / "backend"
+if str(backend_dir) not in sys.path:
+    sys.path.insert(0, str(backend_dir))
+if str(backend_dir.parent) not in sys.path:
+    sys.path.insert(0, str(backend_dir.parent))
 
 from app.db.models.role import Role
 from app.db.session import SessionLocal

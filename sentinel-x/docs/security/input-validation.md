@@ -83,3 +83,4 @@ The ingestion service reads the first 16 bytes of every uploaded file. If any fo
   - Loopback addresses: `127.0.0.0/8`
   - Link-local addresses: `169.254.0.0/16`
   - Reserved documentation networks: `198.51.100.0/24` (TEST-NET-2), `192.0.2.0/24` (TEST-NET-1), `203.0.113.0/24` (TEST-NET-3).
+

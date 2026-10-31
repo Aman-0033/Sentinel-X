@@ -116,3 +116,4 @@ To neutralize credential-stuffing and automated dictionary attacks:
 - **Sliding Window**: Implemented using Redis sorted sets (`ZADD` / `ZREMRANGEBYSCORE`).
 - **Generic Error Messages**: Responses return generic `Invalid email or password` without revealing whether the email address exists in the database.
 - **Timing Protection**: Password verification takes constant time regardless of email validity by hashing dummy credentials on non-existent accounts.
+

@@ -18,3 +18,4 @@ class AuditLogItemSchema(BaseModel):
     ip_address: Optional[str] = None
     created_at: datetime
     metadata: Optional[Dict[str, Any]] = None
+

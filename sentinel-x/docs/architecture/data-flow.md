@@ -93,3 +93,4 @@ $$\text{Risk} = \min\left(100, \max\left(0, W_{\text{class}} \cdot C + W_{\text{
   - $25 \le \text{Risk} < 60$: `MEDIUM`
   - $60 \le \text{Risk} < 85$: `HIGH`
   - $85 \le \text{Risk} \le 100$: `CRITICAL`
+

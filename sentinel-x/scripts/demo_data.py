@@ -8,7 +8,10 @@ from pathlib import Path
 
 # Ensure backend root is in sys.path
 backend_dir = Path(__file__).resolve().parents[1] / "backend"
-sys.path.insert(0, str(backend_dir))
+if not backend_dir.exists():
+    backend_dir = Path(__file__).resolve().parents[0] / "sentinel-x" / "backend"
+if str(backend_dir) not in sys.path:
+    sys.path.insert(0, str(backend_dir))
 
 from app.core.security import get_password_hash
 from app.db.models.analyst_feedback import AnalystFeedback
@@ -84,6 +87,18 @@ def seed_demo_data(db_url: str | None = None, session: Session | None = None) ->
                 "SentinelViewer2026!",
                 "Compliance Auditor",
                 "VIEWER",
+            ),
+            (
+                "admin@sentinel.local",
+                "SentinelAdmin2026!",
+                "Chief SOC Officer",
+                "ADMIN",
+            ),
+            (
+                "analyst@sentinel.local",
+                "SentinelAnalyst2026!",
+                "Tier 2 Threat Analyst",
+                "ANALYST",
             ),
         ]
         users = {}

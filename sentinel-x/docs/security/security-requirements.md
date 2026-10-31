@@ -61,3 +61,4 @@ Sentinel-X is designed and constructed according to industry-standard cybersecur
 - **REQ-AUD-01 (Immutable Audit Logging)**: All security-sensitive operations (login, logout, user creation, incident triage, feedback submission, model promotion) must produce an append-only entry in `audit_logs`.
 - **REQ-AUD-02 (Secret Redaction)**: Structured logging formatters must scrub bearer tokens, passwords, API keys, and sensitive financial tokens from log statements using regex substitution (`redact_data()`).
 - **REQ-AUD-03 (Traceability)**: Every HTTP request must be assigned a unique `X-Request-ID` (UUIDv4) that is logged across all application and worker logs for forensic correlation.
+

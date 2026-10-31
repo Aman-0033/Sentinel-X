@@ -70,3 +70,4 @@ class RoleChecker:
 ```
 
 When an unauthorized user attempts an operation, the API halts execution immediately, commits no database mutations, logs a security warning, and issues an HTTP 403 with standard code `AUTHORIZATION_DENIED`.
+

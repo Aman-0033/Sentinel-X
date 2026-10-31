@@ -115,3 +115,4 @@ flowchart TD
     CheckPrivate -- "Yes (e.g. 10.0.0.0/8, 127.0.0.1, 169.254.169.254)" --> Block["Reject Request (HTTP 400 SSRF_BLOCKED)"]
     CheckPrivate -- "No (Routable Public IP)" --> Allow["Execute Threat Intelligence HTTP Query"]
 ```
+

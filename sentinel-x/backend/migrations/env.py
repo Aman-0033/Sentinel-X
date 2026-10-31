@@ -25,10 +25,17 @@ if config.config_file_name is not None:
 # Model metadata for autogenerate support
 target_metadata = Base.metadata
 
-# Use configured URL or fallback to application settings
-if not config.get_main_option("sqlalchemy.url"):
-    settings = get_settings()
-    config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+# Use configured URL from alembic.ini or override default placeholder with app DATABASE_URL
+current_url = config.get_main_option("sqlalchemy.url")
+if not current_url or "localhost:5432" in current_url:
+    app_db_url = os.getenv("DATABASE_URL")
+    if not app_db_url:
+        try:
+            app_db_url = get_settings().DATABASE_URL
+        except Exception:
+            pass
+    if app_db_url:
+        config.set_main_option("sqlalchemy.url", app_db_url)
 
 
 def run_migrations_offline() -> None:

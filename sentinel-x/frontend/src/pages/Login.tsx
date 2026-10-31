@@ -9,8 +9,8 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [email, setEmail] = useState('admin@sentinel.local');
-  const [password, setPassword] = useState('Sentinel@Admin2026!');
+  const [email, setEmail] = useState('admin@sentinel.internal');
+  const [password, setPassword] = useState('SentinelAdmin2026!');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,9 +29,9 @@ export const Login: React.FC = () => {
     }
   };
 
-  const fillCredentials = (roleEmail: string, roleName: string) => {
+  const fillCredentials = (roleEmail: string, rolePassword: string) => {
     setEmail(roleEmail);
-    setPassword('Sentinel@DevPass2026!');
+    setPassword(rolePassword);
     setError(null);
   };
 
@@ -103,7 +103,7 @@ export const Login: React.FC = () => {
           <div className="grid grid-cols-3 gap-2">
             <button
               type="button"
-              onClick={() => fillCredentials('admin@sentinel.local', 'Admin')}
+              onClick={() => fillCredentials('admin@sentinel.internal', 'SentinelAdmin2026!')}
               className="px-2.5 py-1.5 bg-[#0A0A0A] hover:bg-[#181822] border border-[#1E293B] hover:border-[#007BA7] rounded text-xs font-mono text-[#F8FAFC] transition-colors flex flex-col items-center"
             >
               <span className="font-semibold text-[#007BA7]">ADMIN</span>
@@ -112,7 +112,7 @@ export const Login: React.FC = () => {
 
             <button
               type="button"
-              onClick={() => fillCredentials('analyst@sentinel.local', 'Analyst')}
+              onClick={() => fillCredentials('analyst@sentinel.internal', 'SentinelAnalyst2026!')}
               className="px-2.5 py-1.5 bg-[#0A0A0A] hover:bg-[#181822] border border-[#1E293B] hover:border-[#FF2D95] rounded text-xs font-mono text-[#F8FAFC] transition-colors flex flex-col items-center"
             >
               <span className="font-semibold text-[#FF2D95]">ANALYST</span>
@@ -121,10 +121,10 @@ export const Login: React.FC = () => {
 
             <button
               type="button"
-              onClick={() => fillCredentials('auditor@sentinel.local', 'Auditor')}
+              onClick={() => fillCredentials('viewer@sentinel.internal', 'SentinelViewer2026!')}
               className="px-2.5 py-1.5 bg-[#0A0A0A] hover:bg-[#181822] border border-[#1E293B] hover:border-emerald-500 rounded text-xs font-mono text-[#F8FAFC] transition-colors flex flex-col items-center"
             >
-              <span className="font-semibold text-emerald-400">AUDITOR</span>
+              <span className="font-semibold text-emerald-400">VIEWER</span>
               <span className="text-[9px] text-[#94A3B8]">Read Only</span>
             </button>
           </div>

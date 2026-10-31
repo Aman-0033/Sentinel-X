@@ -66,3 +66,4 @@ flowchart LR
 | **Port Scanning (Reconnaissance)** | High connection attempt rate to consecutive ports; RST packet ratio $> 0.85$. | Block originating external IP on perimeter firewall. | Zero connection attempts from source IP in 10-minute trailing window. |
 | **Brute Force (SSH / HTTP Auth)** | Rapid authentication failures from single IP; high volume of small TCP payloads. | Enforce Redis sliding-window IP jail; alert affected system administrator. | Failed login attempts drop to zero; no unauthorized access occurred. |
 | **Command & Control (Botnet)** | Periodic beaconing interval (low jitter); high DNS query volume to randomized domains. | Isolate infected internal machine to VLAN quarantine; revoke user tokens. | Internal host disconnected from network; outbound DNS queries halted. |
+

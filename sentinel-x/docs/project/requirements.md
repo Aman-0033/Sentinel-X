@@ -50,3 +50,4 @@
 ### 3.4 Usability & Ergonomics (NFR-USE)
 - **NFR-USE-01**: Professional SOC dark-mode aesthetic utilizing deep obsidian background (`#0A0A0A`), electric cyan (`#007BA7`), and hot pink alert accents (`#FF2D95`).
 - **NFR-USE-02**: Fully responsive layout adapting seamlessly from 1080p desktop monitors to laptop screens.
+
