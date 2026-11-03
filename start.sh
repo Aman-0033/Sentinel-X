@@ -36,12 +36,11 @@ export PYTHONPATH="sentinel-x/backend:$PYTHONPATH"
 echo "[*] Running Alembic migrations to head..."
 $ALEMBIC -c sentinel-x/backend/alembic.ini upgrade head
 
-if [ ! -f "sentinel_dev.db" ]; then
-    echo "[*] Seeding database telemetry and demo users..."
-    $PYTHON scripts/seed_database.py
-    $PYTHON scripts/create_admin.py
-    $PYTHON scripts/demo_data.py
-fi
+# 4. Populate roles, administrator, and realistic telemetry (idempotent)
+echo "[*] Ensuring database telemetry and accounts are populated..."
+$PYTHON scripts/seed_database.py
+$PYTHON scripts/create_admin.py
+$PYTHON scripts/demo_data.py
 
 # 4. Start backend & frontend
 echo "[*] Starting FastAPI Backend on http://localhost:8000..."
@@ -68,3 +67,4 @@ echo "Press Ctrl+C to stop servers."
 
 trap "kill $BACKEND_PID $FRONTEND_PID 2>/dev/null" EXIT
 wait
+

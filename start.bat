@@ -31,13 +31,11 @@ echo [*] Applying Alembic database migrations to head...
 set "PYTHONPATH=sentinel-x/backend;%PYTHONPATH%"
 "%ALEMBIC_EXE%" -c sentinel-x/backend/alembic.ini upgrade head
 
-:: 4. Populate roles, administrator, and realistic telemetry if needed
-if not exist "sentinel_dev.db" (
-    echo [*] Initializing database telemetry and accounts...
-    "%PYTHON_EXE%" scripts/seed_database.py
-    "%PYTHON_EXE%" scripts/create_admin.py
-    "%PYTHON_EXE%" scripts/demo_data.py
-)
+:: 4. Populate roles, administrator, and realistic telemetry (idempotent)
+echo [*] Ensuring database telemetry and accounts are populated...
+"%PYTHON_EXE%" scripts\seed_database.py
+"%PYTHON_EXE%" scripts\create_admin.py
+"%PYTHON_EXE%" scripts\demo_data.py
 
 :: 5. Launch FastAPI Backend on port 8000
 echo [*] Starting FastAPI Backend server on port 8000...
@@ -77,3 +75,4 @@ echo.
 echo ===============================================================================
 echo Press any key to close this launcher window (servers will remain running).
 pause >nul
+

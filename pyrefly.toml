@@ -1,0 +1,6 @@
+search-path = [
+    "backend",
+    "sentinel-x/backend",
+    "sentinel-x",
+    ".",
+]

@@ -104,5 +104,6 @@ sentinel-x/backend/storage/
 *.pdf
 /frontend
 /scripts
+/backend
 
 
