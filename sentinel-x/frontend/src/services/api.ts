@@ -27,7 +27,19 @@ import {
   mockThreatIntel,
 } from './mockData';
 
-const BASE_URL = '/api/v1';
+const getApiBaseUrl = (): string => {
+  const envUrl = (import.meta as any).env?.VITE_API_URL ? String((import.meta as any).env.VITE_API_URL).trim() : '';
+  if (!envUrl) {
+    return '/api/v1';
+  }
+  const withScheme = envUrl.startsWith('http://') || envUrl.startsWith('https://')
+    ? envUrl
+    : `https://${envUrl}`;
+  const clean = withScheme.replace(/\/+$/, '');
+  return clean.endsWith('/api/v1') ? clean : `${clean}/api/v1`;
+};
+
+const BASE_URL = getApiBaseUrl();
 
 async function request<T>(endpoint: string, options: RequestInit = {}, fallbackData?: T): Promise<T> {
   const token = authStorage.getToken();

@@ -29,10 +29,25 @@ class WebSocketService {
     this.isConnecting = true;
     this.status = 'CONNECTING';
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.host || 'localhost:5173';
-    // Vite proxy directs /ws to backend:8000
-    const wsUrl = `${protocol}//${host}/ws/dashboard?token=${encodeURIComponent(token)}`;
+    let wsUrl: string;
+    const envWsUrl = (import.meta as any).env?.VITE_WS_URL ? String((import.meta as any).env.VITE_WS_URL).trim() : '';
+    if (envWsUrl) {
+      let base = envWsUrl;
+      if (!base.startsWith('ws://') && !base.startsWith('wss://')) {
+        const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        base = `${proto}//${base.replace(/^https?:\/\//, '')}`;
+      }
+      base = base.replace(/\/+$/, '');
+      if (!base.includes('/ws/dashboard')) {
+        base = `${base}/ws/dashboard`;
+      }
+      wsUrl = `${base}?token=${encodeURIComponent(token)}`;
+    } else {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const host = window.location.host || 'localhost:5173';
+      // Vite proxy directs /ws to backend:8000
+      wsUrl = `${protocol}//${host}/ws/dashboard?token=${encodeURIComponent(token)}`;
+    }
 
     try {
       this.ws = new WebSocket(wsUrl);

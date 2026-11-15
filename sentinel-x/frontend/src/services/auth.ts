@@ -34,10 +34,24 @@ export const authStorage = {
   },
 };
 
+const getAuthBaseUrl = (): string => {
+  const envUrl = (import.meta as any).env?.VITE_API_URL ? String((import.meta as any).env.VITE_API_URL).trim() : '';
+  if (!envUrl) {
+    return '/api/v1';
+  }
+  const withScheme = envUrl.startsWith('http://') || envUrl.startsWith('https://')
+    ? envUrl
+    : `https://${envUrl}`;
+  const clean = withScheme.replace(/\/+$/, '');
+  return clean.endsWith('/api/v1') ? clean : `${clean}/api/v1`;
+};
+
+const API_BASE = getAuthBaseUrl();
+
 export const authService = {
   async login(email: string, password: string): Promise<LoginResponse> {
     try {
-      const res = await fetch('/api/v1/auth/login', {
+      const res = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -88,7 +102,7 @@ export const authService = {
 
   async refresh(): Promise<string | null> {
     try {
-      const res = await fetch('/api/v1/auth/refresh', {
+      const res = await fetch(`${API_BASE}/auth/refresh`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -116,7 +130,7 @@ export const authService = {
     if (!token) return null;
 
     try {
-      const res = await fetch('/api/v1/auth/me', {
+      const res = await fetch(`${API_BASE}/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -135,7 +149,7 @@ export const authService = {
     const token = authStorage.getToken();
     try {
       if (token) {
-        await fetch('/api/v1/auth/logout', {
+        await fetch(`${API_BASE}/auth/logout`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,

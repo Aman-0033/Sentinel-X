@@ -23,6 +23,7 @@ def _get_req_id(request: Request) -> str:
     return getattr(request.state, "request_id", None) or request_id_ctx.get() or "unknown"
 
 
+@router.get("", status_code=status.HTTP_200_OK)
 @router.get("/live", status_code=status.HTTP_200_OK)
 async def liveness_probe(request: Request) -> Dict[str, Any]:
     """Liveness probe indicating application server is running and accepting connections."""

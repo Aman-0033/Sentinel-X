@@ -48,7 +48,7 @@ $UVICORN app.main:app --app-dir sentinel-x/backend --host 0.0.0.0 --port 8000 &
 BACKEND_PID=$!
 
 echo "[*] Starting Vite Frontend on http://localhost:5173..."
-npm run dev --prefix sentinel-x/frontend -- --port 5173 --host 0.0.0.0 &
+(cd "$DIR/sentinel-x/frontend" && npm run dev -- --port 5173 --host 0.0.0.0) &
 FRONTEND_PID=$!
 
 echo ""

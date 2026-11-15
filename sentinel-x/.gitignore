@@ -75,6 +75,7 @@ yarn-error.log*
 # IDE and OS files
 .vscode/
 .idea/
+.playwright-mcp/
 *.swp
 *.swo
 *~

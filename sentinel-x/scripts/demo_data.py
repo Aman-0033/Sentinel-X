@@ -10,8 +10,16 @@ from pathlib import Path
 backend_dir = Path(__file__).resolve().parents[1] / "backend"
 if not backend_dir.exists():
     backend_dir = Path(__file__).resolve().parents[0] / "sentinel-x" / "backend"
-if str(backend_dir) not in sys.path:
-    sys.path.insert(0, str(backend_dir))
+if not backend_dir.exists() and (Path(__file__).resolve().parents[1] / "app").exists():
+    backend_dir = Path(__file__).resolve().parents[1]
+if not backend_dir.exists() and (Path(__file__).resolve().parents[0] / "app").exists():
+    backend_dir = Path(__file__).resolve().parents[0]
+
+if backend_dir.exists():
+    if str(backend_dir) not in sys.path:
+        sys.path.insert(0, str(backend_dir))
+    if str(backend_dir.parent) not in sys.path:
+        sys.path.insert(0, str(backend_dir.parent))
 
 from app.core.security import get_password_hash
 from app.db.models.analyst_feedback import AnalystFeedback
@@ -44,6 +52,11 @@ def seed_demo_data(db_url: str | None = None, session: Session | None = None) ->
                 db_url = get_settings().DATABASE_URL
             except Exception:  # noqa: BLE001
                 db_url = "sqlite:///sentinel_dev.db"
+
+        if db_url.startswith("postgres://"):
+            db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+        elif db_url.startswith("postgresql://") and "+psycopg2" not in db_url and "+asyncpg" not in db_url:
+            db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
 
         print(f"Connecting to database: {db_url}")
         engine = create_engine(db_url)

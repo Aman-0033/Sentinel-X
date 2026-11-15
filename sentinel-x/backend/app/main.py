@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1 import api_router
 from app.api.v1.health import router as health_router
+from app.api.v1.websocket import router as websocket_router
 from app.core.config import get_settings
 from app.core.exceptions import register_exception_handlers
 from app.core.logging import setup_logging
@@ -77,8 +78,9 @@ def create_app() -> FastAPI:
     app.add_middleware(AuthenticationMiddleware)
     app.add_middleware(RequestIdMiddleware)
 
-    # 3. Mount health probe routes (root /health) and API v1 endpoints
+    # 3. Mount health probe routes (root /health), WebSocket feed, and API v1 endpoints
     app.include_router(health_router, prefix="/health", tags=["Health"])
+    app.include_router(websocket_router, tags=["WebSocket"])
     app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
     return app

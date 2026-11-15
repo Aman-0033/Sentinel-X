@@ -50,7 +50,7 @@ if %ERRORLEVEL% NEQ 0 (
 echo [*] Starting Vite Frontend server on port 5173...
 netstat -ano | findstr :5173 >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
-    start "Sentinel-X Frontend (Port 5173)" cmd /k "cd /d ""%~dp0"" && npm run dev --prefix sentinel-x/frontend -- --port 5173 --host 0.0.0.0"
+    start "Sentinel-X Frontend (Port 5173)" cmd /k "cd /d ""%~dp0sentinel-x\frontend"" && npm run dev -- --port 5173 --host 0.0.0.0"
 ) else (
     echo [i] Frontend is already running on port 5173.
 )

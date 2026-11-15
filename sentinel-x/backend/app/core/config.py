@@ -92,6 +92,19 @@ class Settings(BaseSettings):
     )
     RATE_LIMIT_PER_MINUTE: int = Field(default=120, description="Rate limit quota per IP/minute")
 
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def assemble_database_url(cls, v: Any) -> str:
+        """Normalize Render/Railway/Heroku postgres:// to postgresql+psycopg2://."""
+        if isinstance(v, str):
+            v_str = v.strip()
+            if v_str.startswith("postgres://"):
+                return v_str.replace("postgres://", "postgresql+psycopg2://", 1)
+            if v_str.startswith("postgresql://") and "+psycopg2" not in v_str and "+asyncpg" not in v_str:
+                return v_str.replace("postgresql://", "postgresql+psycopg2://", 1)
+            return v_str
+        return v
+
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
     def assemble_cors_origins(cls, v: Any) -> List[str]:

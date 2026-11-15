@@ -92,3 +92,33 @@ docker compose exec backend python scripts/create_admin.py \
 curl -f http://localhost/health/ready
 # Expected: {"status":"healthy","database":true,"redis":true}
 ```
+
+---
+
+## 5. Render Cloud Deployment (Blueprint IaC)
+
+Sentinel-X includes a production `render.yaml` Blueprint at the repository root:
+
+1. Link your GitHub repository to [Render.com](https://render.com).
+2. Navigate to **Blueprints** -> **New Blueprint Instance**.
+3. Select your repository. Render automatically discovers `render.yaml` and provisions:
+   - **PostgreSQL 16 Database**: `sentinel-postgres`
+   - **Redis Instance**: `sentinel-redis`
+   - **FastAPI Backend**: `sentinel-backend` with automated `alembic upgrade head`, role seeding, admin initialization, and demo data generation.
+   - **Celery Worker**: `sentinel-worker` for asynchronous threat correlation and report tasks.
+   - **React SPA Frontend**: `sentinel-frontend` static site automatically linked to `VITE_API_URL` and `VITE_WS_URL`.
+4. Click **Apply** to deploy the full cluster with zero manual configuration.
+
+---
+
+## 6. Railway Cloud Deployment
+
+Sentinel-X provides native `railway.json` and `railway.toml` configurations:
+
+1. In [Railway.app](https://railway.app), create a **New Project**.
+2. Add a **PostgreSQL** database and a **Redis** instance from the Railway marketplace.
+3. Deploy the GitHub repository as a web service; Railway uses `deployment/docker/backend.Dockerfile` and runs database migrations + seeding on startup.
+4. Add a second service from the same repo for the Celery worker with start command `celery -A app.workers.celery_app worker --loglevel=info`.
+5. Deploy the frontend static service pointing to the `frontend/` directory with `VITE_API_URL` set to the backend's public domain.
+
+

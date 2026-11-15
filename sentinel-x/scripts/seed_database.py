@@ -13,10 +13,16 @@ from pathlib import Path
 backend_dir = Path(__file__).resolve().parents[1] / "backend"
 if not backend_dir.exists():
     backend_dir = Path(__file__).resolve().parents[0] / "sentinel-x" / "backend"
-if str(backend_dir) not in sys.path:
-    sys.path.insert(0, str(backend_dir))
-if str(backend_dir.parent) not in sys.path:
-    sys.path.insert(0, str(backend_dir.parent))
+if not backend_dir.exists() and (Path(__file__).resolve().parents[1] / "app").exists():
+    backend_dir = Path(__file__).resolve().parents[1]
+if not backend_dir.exists() and (Path(__file__).resolve().parents[0] / "app").exists():
+    backend_dir = Path(__file__).resolve().parents[0]
+
+if backend_dir.exists():
+    if str(backend_dir) not in sys.path:
+        sys.path.insert(0, str(backend_dir))
+    if str(backend_dir.parent) not in sys.path:
+        sys.path.insert(0, str(backend_dir.parent))
 
 from app.db.models.role import Role
 from app.db.session import SessionLocal

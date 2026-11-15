@@ -35,6 +35,10 @@ if not current_url or "localhost:5432" in current_url:
         except Exception:
             pass
     if app_db_url:
+        if app_db_url.startswith("postgres://"):
+            app_db_url = app_db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+        elif app_db_url.startswith("postgresql://") and "+psycopg2" not in app_db_url and "+asyncpg" not in app_db_url:
+            app_db_url = app_db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
         config.set_main_option("sqlalchemy.url", app_db_url)
 
 
@@ -55,6 +59,10 @@ def run_migrations_offline() -> None:
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
     target_url = config.get_main_option("sqlalchemy.url") or get_settings().DATABASE_URL
+    if target_url.startswith("postgres://"):
+        target_url = target_url.replace("postgres://", "postgresql+psycopg2://", 1)
+    elif target_url.startswith("postgresql://") and "+psycopg2" not in target_url and "+asyncpg" not in target_url:
+        target_url = target_url.replace("postgresql://", "postgresql+psycopg2://", 1)
     configuration = config.get_section(config.config_ini_section, {})
     configuration["sqlalchemy.url"] = target_url
 
