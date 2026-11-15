@@ -53,6 +53,9 @@ class Settings(BaseSettings):
     # Celery Background Worker Configuration
     CELERY_BROKER_URL: Optional[str] = Field(default=None, description="Celery broker URL")
     CELERY_RESULT_BACKEND: Optional[str] = Field(default=None, description="Celery backend URL")
+    CELERY_TASK_ALWAYS_EAGER: bool = Field(
+        default=False, description="Run Celery tasks locally/in-process without a separate worker"
+    )
 
     # Authentication & Cryptographic Secrets (Required)
     JWT_SECRET: str = Field(

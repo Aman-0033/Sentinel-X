@@ -1,13 +1,3 @@
-# ==============================================================================
-#                      SENTINEL-X RENDER CLOUD BLUEPRINT
-# ==============================================================================
-# Complete Infrastructure-as-Code for Live Production Cloud Deployment:
-# 1. Managed PostgreSQL 16 database instance
-# 2. Managed Redis / Key-Value store instance
-# 3. FastAPI Backend Web Service with auto-migrations and demo data seeding
-# 4. Celery Background Worker Service for threat processing and report generation
-# 5. React + Vite Production SPA Frontend wired to VITE_API_URL and VITE_WS_URL
-# ==============================================================================
 version: "1"
 
 databases:
@@ -20,9 +10,6 @@ databases:
     ipAllowList: []
 
 services:
-  # ----------------------------------------------------------------------------
-  # 1. Managed Redis / Key-Value Instance
-  # ----------------------------------------------------------------------------
   - type: keyvalue
     name: sentinel-redis
     region: oregon
@@ -30,16 +17,13 @@ services:
     ipAllowList: []
     maxmemoryPolicy: noeviction
 
-  # ----------------------------------------------------------------------------
-  # 2. FastAPI Backend Web Service
-  # ----------------------------------------------------------------------------
   - type: web
     name: sentinel-backend
     runtime: python
     region: oregon
     plan: free
-    buildCommand: "pip install --upgrade pip && pip install -r backend/requirements.txt"
-    startCommand: "sh -c 'cd backend && alembic upgrade head && python ../scripts/seed_database.py && python ../scripts/create_admin.py && python ../scripts/demo_data.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT'"
+    buildCommand: pip install --upgrade pip && pip install -r backend/requirements.txt
+    startCommand: sh -c 'cd backend && alembic upgrade head && python ../scripts/seed_database.py && python ../scripts/create_admin.py && python ../scripts/demo_data.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT'
     healthCheckPath: /health/live
     envVars:
       - key: ENVIRONMENT
@@ -50,6 +34,8 @@ services:
         value: INFO
       - key: PYTHONPATH
         value: /opt/render/project/src/backend:/opt/render/project/src
+      - key: CELERY_TASK_ALWAYS_EAGER
+        value: "true"
       - key: DATABASE_URL
         fromDatabase:
           name: sentinel-postgres
@@ -80,74 +66,10 @@ services:
       - key: CORS_ORIGINS
         value: '["*"]'
 
-  # ----------------------------------------------------------------------------
-  # 3. Celery Background Worker Service
-  # ----------------------------------------------------------------------------
-  - type: worker
-    name: sentinel-worker
-    runtime: python
-    region: oregon
-    plan: free
-    buildCommand: "pip install --upgrade pip && pip install -r backend/requirements.txt"
-    startCommand: "sh -c 'cd backend && celery -A app.workers.celery_app worker --loglevel=info'"
-    envVars:
-      - key: ENVIRONMENT
-        value: production
-      - key: DEBUG
-        value: "false"
-      - key: LOG_LEVEL
-        value: INFO
-      - key: PYTHONPATH
-        value: /opt/render/project/src/backend:/opt/render/project/src
-      - key: DATABASE_URL
-        fromDatabase:
-          name: sentinel-postgres
-          property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: keyvalue
-          name: sentinel-redis
-          property: connectionString
-      - key: CELERY_BROKER_URL
-        fromService:
-          type: keyvalue
-          name: sentinel-redis
-          property: connectionString
-      - key: CELERY_RESULT_BACKEND
-        fromService:
-          type: keyvalue
-          name: sentinel-redis
-          property: connectionString
-      - key: JWT_SECRET
-        fromService:
-          type: web
-          name: sentinel-backend
-          envVarKey: JWT_SECRET
-      - key: JWT_REFRESH_SECRET
-        fromService:
-          type: web
-          name: sentinel-backend
-          envVarKey: JWT_REFRESH_SECRET
-      - key: ADMIN_BOOTSTRAP_SECRET
-        fromService:
-          type: web
-          name: sentinel-backend
-          envVarKey: ADMIN_BOOTSTRAP_SECRET
-      - key: MODEL_SIGNING_KEY
-        fromService:
-          type: web
-          name: sentinel-backend
-          envVarKey: MODEL_SIGNING_KEY
-
-  # ----------------------------------------------------------------------------
-  # 4. React + Vite Frontend Static Site
-  # ----------------------------------------------------------------------------
   - type: web
     name: sentinel-frontend
     runtime: static
-    region: oregon
-    plan: free
-    buildCommand: "cd frontend && npm install && npm run build"
+    buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: ./frontend/dist
     routes:
       - type: rewrite

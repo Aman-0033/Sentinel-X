@@ -22,6 +22,8 @@ celery_app = Celery(
 
 # Secure configuration: JSON-only serialization, UTC timezone
 celery_app.conf.update(
+    task_always_eager=settings.CELERY_TASK_ALWAYS_EAGER,
+    task_eager_propagates=True,
     task_serializer="json",
     accept_content=["json"],
     result_serializer="json",
