@@ -15,11 +15,13 @@ logger = logging.getLogger("sentinel.redis")
 _redis_client: Optional[redis.Redis] = None
 
 
-def get_redis_client() -> redis.Redis:
-    """Return a singleton Redis client with connection pooling."""
+def get_redis_client() -> Optional[redis.Redis]:
+    """Return a singleton Redis client with connection pooling, or None if REDIS_URL is not set."""
     global _redis_client
     if _redis_client is None:
         settings = get_settings()
+        if not settings.REDIS_URL:
+            return None
         _redis_client = redis.from_url(
             settings.REDIS_URL,
             socket_timeout=1.0,
@@ -30,9 +32,14 @@ def get_redis_client() -> redis.Redis:
 
 
 def check_redis_connection() -> bool:
-    """Safe Redis readiness probe. Pings Redis server with short timeout."""
+    """Safe Redis readiness probe. Pings Redis server with short timeout, or returns True in in-memory mode."""
     try:
+        settings = get_settings()
+        if not settings.REDIS_URL:
+            return True
         client = get_redis_client()
+        if client is None:
+            return True
         return bool(client.ping())
     except Exception as exc:
         logger.warning(f"Redis readiness check failed: {exc.__class__.__name__}")

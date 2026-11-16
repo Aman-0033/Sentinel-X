@@ -44,10 +44,14 @@ class Settings(BaseSettings):
     DB_MAX_OVERFLOW: int = Field(default=20, description="Maximum connection pool overflow")
     DB_POOL_PRE_PING: bool = Field(default=True, description="Validate connections before use")
 
-    # Redis Configuration
-    REDIS_URL: str = Field(
-        ...,
+    # Redis Configuration (Optional: in-memory fallback when unset)
+    REDIS_URL: Optional[str] = Field(
+        default=None,
         description="Redis Connection String",
+    )
+    ALLOW_SQLITE: bool = Field(
+        default=False,
+        description="Explicitly allow SQLite in production environment (e.g. for free-tier deployments)",
     )
 
     # Celery Background Worker Configuration
@@ -129,11 +133,11 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def validate_environment_integrity(self) -> "Settings":
         """Strict validation for production security and default fallbacks."""
-        # Fallback Celery URLs to REDIS_URL if not set
+        # Fallback Celery URLs to REDIS_URL or memory store if not set
         if not self.CELERY_BROKER_URL:
-            self.CELERY_BROKER_URL = self.REDIS_URL
+            self.CELERY_BROKER_URL = self.REDIS_URL or "memory://"
         if not self.CELERY_RESULT_BACKEND:
-            self.CELERY_RESULT_BACKEND = self.REDIS_URL
+            self.CELERY_RESULT_BACKEND = self.REDIS_URL or "cache+memory://"
 
         # Production Strict Enforcement
         if self.ENVIRONMENT == "production":
@@ -164,7 +168,7 @@ class Settings(BaseSettings):
                         f"CRITICAL: {secret_name} contains placeholder/insecure keyword in production."
                     )
 
-            if "sqlite" in self.DATABASE_URL.lower():
+            if "sqlite" in self.DATABASE_URL.lower() and not self.ALLOW_SQLITE:
                 raise ValueError(
                     "CRITICAL: Production cannot use SQLite; PostgreSQL 16+ is required."
                 )

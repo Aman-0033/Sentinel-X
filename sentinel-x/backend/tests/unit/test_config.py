@@ -32,7 +32,6 @@ def test_config_fails_safely_when_required_field_missing(monkeypatch):
     """Application must fail safely when required configuration is missing."""
     for env_var in [
         "DATABASE_URL",
-        "REDIS_URL",
         "JWT_SECRET",
         "JWT_REFRESH_SECRET",
         "ADMIN_BOOTSTRAP_SECRET",
@@ -46,7 +45,6 @@ def test_config_fails_safely_when_required_field_missing(monkeypatch):
     errors = exc_info.value.errors()
     missing_fields = {e["loc"][0] for e in errors}
     assert "DATABASE_URL" in missing_fields
-    assert "REDIS_URL" in missing_fields
     assert "JWT_SECRET" in missing_fields
     assert "JWT_REFRESH_SECRET" in missing_fields
     assert "ADMIN_BOOTSTRAP_SECRET" in missing_fields

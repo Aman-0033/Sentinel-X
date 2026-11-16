@@ -1,29 +1,14 @@
 version: "1"
 
-databases:
-  - name: sentinel-postgres
-    databaseName: sentinel_x
-    user: sentinel
-    plan: free
-    region: oregon
-    postgresMajorVersion: "16"
-    ipAllowList: []
-
 services:
-  - type: keyvalue
-    name: sentinel-redis
-    region: oregon
-    plan: free
-    ipAllowList: []
-    maxmemoryPolicy: noeviction
-
   - type: web
-    name: sentinel-backend
+    name: sentinel-x-backend
     runtime: python
     region: oregon
     plan: free
-    buildCommand: pip install --upgrade pip && pip install -r backend/requirements.txt
-    startCommand: sh -c 'cd backend && alembic upgrade head && python ../scripts/seed_database.py && python ../scripts/create_admin.py && python ../scripts/demo_data.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT'
+    rootDir: sentinel-x/backend
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: alembic upgrade head && python ../scripts/seed_database.py && python ../scripts/create_admin.py && python ../scripts/demo_data.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health/live
     envVars:
       - key: ENVIRONMENT
@@ -32,29 +17,14 @@ services:
         value: "false"
       - key: LOG_LEVEL
         value: INFO
-      - key: PYTHONPATH
-        value: /opt/render/project/src/backend:/opt/render/project/src
-      - key: CELERY_TASK_ALWAYS_EAGER
+      - key: ALLOW_SQLITE
         value: "true"
       - key: DATABASE_URL
-        fromDatabase:
-          name: sentinel-postgres
-          property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: keyvalue
-          name: sentinel-redis
-          property: connectionString
-      - key: CELERY_BROKER_URL
-        fromService:
-          type: keyvalue
-          name: sentinel-redis
-          property: connectionString
-      - key: CELERY_RESULT_BACKEND
-        fromService:
-          type: keyvalue
-          name: sentinel-redis
-          property: connectionString
+        value: sqlite:///./sentinel_x.db
+      - key: CELERY_TASK_ALWAYS_EAGER
+        value: "true"
+      - key: PYTHONPATH
+        value: .
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
@@ -67,10 +37,12 @@ services:
         value: '["*"]'
 
   - type: web
-    name: sentinel-frontend
+    name: sentinel-x-frontend
     runtime: static
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: ./frontend/dist
+    plan: free
+    rootDir: sentinel-x/frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
     routes:
       - type: rewrite
         source: /*
@@ -79,10 +51,10 @@ services:
       - key: VITE_API_URL
         fromService:
           type: web
-          name: sentinel-backend
+          name: sentinel-x-backend
           property: host
       - key: VITE_WS_URL
         fromService:
           type: web
-          name: sentinel-backend
+          name: sentinel-x-backend
           property: host

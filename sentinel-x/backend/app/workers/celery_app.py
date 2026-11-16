@@ -39,6 +39,8 @@ celery_app.conf.update(
 
 def check_celery_broker() -> bool:
     """Safe check for Celery broker connectivity."""
+    if settings.CELERY_TASK_ALWAYS_EAGER:
+        return True
     try:
         with celery_app.connection_for_read() as conn:
             conn.connect()

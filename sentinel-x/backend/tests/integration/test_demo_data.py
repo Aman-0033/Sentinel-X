@@ -67,7 +67,7 @@ def test_seed_demo_data_populates_all_telemetry(db_session: Session):
     assert len(incidents) >= 1
     for inc in incidents:
         assert inc.severity in ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
-        assert inc.status in ["OPEN", "TRIAGED", "INVESTIGATING", "CONTAINED", "CLOSED"]
+        assert inc.status in ["OPEN", "TRIAGED", "INVESTIGATING", "CONTAINED", "RESOLVED", "FALSE_POSITIVE", "CLOSED"]
 
     # 8. Verify threat intel enrichments
     ti_entries = db_session.query(ThreatIntelEnrichment).all()

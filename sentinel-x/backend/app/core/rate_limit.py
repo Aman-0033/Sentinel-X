@@ -57,6 +57,8 @@ def check_rate_limit(
 
     try:
         client = redis_client or get_redis_client()
+        if client is None:
+            return _check_in_memory(key, limit, window_seconds, now)
         redis_key = f"ratelimit:{key}"
 
         pipe = client.pipeline()
@@ -93,7 +95,8 @@ def reset_rate_limit(key: str) -> None:
     if time.time() - _redis_last_failed >= 5.0:
         try:
             client = get_redis_client()
-            client.delete(f"ratelimit:{key}")
+            if client is not None:
+                client.delete(f"ratelimit:{key}")
         except Exception:
             _redis_last_failed = time.time()
     if key in _in_memory_store:
